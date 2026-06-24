@@ -1,0 +1,54 @@
+job-tracker-frontend/
+└─ src/
+   ├─ main.ts
+   ├─ index.html
+   ├─ styles.scss
+   └─ app/
+      ├─ app.component.ts
+      ├─ app.config.ts
+      ├─ app.routes.ts
+      ├─ core/
+      │  ├─ constants/
+      │  │  └─ api.constants.ts
+      │  ├─ interceptors/
+      │  │  ├─ auth.interceptor.ts
+      │  │  └─ error.interceptor.ts
+      │  ├─ guards/
+      │  │  └─ auth.guard.ts
+      │  ├─ services/
+      │  │  ├─ auth.service.ts
+      │  │  ├─ token.service.ts
+      │  │  └─ notification.service.ts
+      │  └─ models/
+      │     ├─ auth.models.ts
+      │     ├─ application.models.ts
+      │     └─ dashboard.models.ts
+      ├─ shared/
+      │  ├─ components/
+      │  │  ├─ app-toolbar/
+      │  │  │  ├─ app-toolbar.component.ts
+      │  │  │  ├─ app-toolbar.component.html
+      │  │  │  └─ app-toolbar.component.scss
+      │  │  ├─ status-chip/
+      │  │  └─ confirm-dialog/
+      │  ├─ pipes/
+      │  └─ utils/
+      └─ features/
+         ├─ auth/
+         │  ├─ pages/
+         │  │  ├─ login-page/
+         │  │  └─ register-page/
+         │  └─ components/
+         ├─ dashboard/
+         │  ├─ pages/dashboard-page/
+         │  └─ services/dashboard.service.ts
+         └─ applications/
+            ├─ pages/
+            │  ├─ applications-list-page/
+            │  ├─ application-create-page/
+            │  └─ application-edit-page/
+            ├─ components/
+            │  ├─ application-form/
+            │  ├─ application-filter-bar/
+            │  └─ applications-table/
+            └─ services/applications.service.ts

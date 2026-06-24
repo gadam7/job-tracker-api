@@ -1,0 +1,61 @@
+job-tracker-backend/
+└─ src/main/java/com/gadam7/jobtracker/
+   ├─ JobTrackerApplication.java
+   ├─ config/
+   │  ├─ OpenApiConfig.java
+   │  ├─ CorsConfig.java
+   │  └─ SecurityConfig.java
+   ├─ security/
+   │  ├─ JwtAuthenticationFilter.java
+   │  ├─ JwtService.java
+   │  ├─ CustomUserDetailsService.java
+   │  └─ AuthEntryPointJwt.java
+   ├─ auth/
+   │  ├─ AuthController.java
+   │  ├─ AuthService.java
+   │  ├─ dto/
+   │  │  ├─ LoginRequest.java
+   │  │  ├─ RegisterRequest.java
+   │  │  └─ AuthResponse.java
+   │  └─ mapper/
+   │     └─ AuthMapper.java
+   ├─ user/
+   │  ├─ User.java
+   │  ├─ UserRepository.java
+   │  ├─ Role.java
+   │  └─ UserService.java
+   ├─ application/
+   │  ├─ JobApplication.java
+   │  ├─ ApplicationStatus.java
+   │  ├─ JobApplicationRepository.java
+   │  ├─ JobApplicationController.java
+   │  ├─ JobApplicationService.java
+   │  ├─ dto/
+   │  │  ├─ JobApplicationCreateRequest.java
+   │  │  ├─ JobApplicationUpdateRequest.java
+   │  │  ├─ JobApplicationResponse.java
+   │  │  └─ JobApplicationFilterRequest.java
+   │  └─ mapper/
+   │     └─ JobApplicationMapper.java
+   ├─ dashboard/
+   │  ├─ DashboardController.java
+   │  ├─ DashboardService.java
+   │  └─ dto/
+   │     ├─ DashboardSummaryResponse.java
+   │     └─ StatusCountDto.java
+   ├─ common/
+   │  ├─ dto/
+   │  │  ├─ ApiErrorResponse.java
+   │  │  └─ PageResponse.java
+   │  ├─ exception/
+   │  │  ├─ GlobalExceptionHandler.java
+   │  │  ├─ ResourceNotFoundException.java
+   │  │  ├─ BadRequestException.java
+   │  │  └─ UnauthorizedException.java
+   │  ├─ util/
+   │  │  └─ SecurityUtils.java
+   │  └─ constants/
+   │     └─ AppConstants.java
+   └─ infrastructure/
+      └─ persistence/
+         └─ AuditingConfig.java
