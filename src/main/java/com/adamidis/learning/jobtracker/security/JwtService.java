@@ -1,8 +1,9 @@
 package com.adamidis.learning.jobtracker.security;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,36 +16,50 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    public static final String JAVA_LEARNING_SA = "java-learning-sa";
+    public static final String JOB_TRACKER = "job-tracker";
+
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    @Value("${jwt.expiration-ms}")
-    private long jwtExpirationMs;
+    @Value("${jwt.expiration-ms}") // 1 hour expiration
+    private long accessExpirationMs;
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(userDetails, null, List.of(), List.of());
+    @Value("${jwt.refresh-expiration-ms}") // 24 hours expiration
+    private long refreshExpirationMs;
+
+    public String generateAccessToken(UserDetails userDetails, Long userId, Collection<String> roles, Collection<String> privileges) {
+        return JWT.create().withIssuer(JAVA_LEARNING_SA)
+                .withAudience(JOB_TRACKER)
+                .withClaim("uid", userId)
+                .withSubject(String.valueOf(userDetails.getUsername()))
+                .withClaim("roles", new ArrayList<>(roles))
+                .withClaim("privileges", new ArrayList<>(privileges))
+                .withClaim("type", "access")
+                .withIssuedAt(new Date())
+                .withExpiresAt(new Date(System.currentTimeMillis() + accessExpirationMs))
+                .sign(Algorithm.HMAC256(jwtSecret.getBytes()));
     }
 
-    public String generateToken(UserDetails userDetails, Long userId, Collection<String> roles, Collection<String> privileges) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("uid", userId);
-        claims.put("roles", roles);
-        claims.put("privileges", privileges);
-
-        Date now = new Date();
-        Date expiration = new Date(now.getTime() + jwtExpirationMs);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(getSigningKey())
-                .compact();
+    public String generateRefreshToken(UserDetails userDetails, Long userId, Collection<String> privileges) {
+        return JWT.create().withIssuer(JAVA_LEARNING_SA)
+                .withAudience(JOB_TRACKER)
+                .withClaim("uid", userId)
+                .withSubject(String.valueOf(userDetails.getUsername()))
+                .withClaim("privileges", new ArrayList<>(privileges))
+                .withClaim("type", "refresh")
+                .withIssuedAt(new Date())
+                .withExpiresAt(new Date(System.currentTimeMillis() + refreshExpirationMs))
+                .sign(Algorithm.HMAC256(jwtSecret.getBytes()));
     }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public boolean isRefreshTokenValid(String token) {
+        String type = extractClaim(token, claims -> claims.get("type", String.class));
+        return type.equals("refresh");
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -66,7 +81,6 @@ public class JwtService {
     }
 
     private SecretKey getSigningKey() {
-        byte[] encodedKey = Decoders.BASE64.decode(jwtSecret);
-        return Keys.hmacShaKeyFor(encodedKey);
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 }

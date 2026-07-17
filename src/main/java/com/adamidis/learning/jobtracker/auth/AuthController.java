@@ -1,8 +1,6 @@
 package com.adamidis.learning.jobtracker.auth;
 
-import com.adamidis.learning.jobtracker.auth.dto.AuthResponse;
-import com.adamidis.learning.jobtracker.auth.dto.LoginRequest;
-import com.adamidis.learning.jobtracker.auth.dto.RegisterRequest;
+import com.adamidis.learning.jobtracker.auth.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,5 +22,17 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @PostMapping("/refresh")
+    public AuthResponse refreshToken(@RequestBody RefreshTokenRequest request) {
+        System.out.println("REFRESH HIT");
+        System.out.println("TOKEN NULL? " + (request == null || request.refreshToken() == null));
+
+        if (request == null || request.refreshToken() == null) {
+            throw new IllegalArgumentException("Refresh token is required");
+        }
+
+        return authService.refreshToken(request.refreshToken());
     }
 }
